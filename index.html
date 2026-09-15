@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skybound Adventure</title>
+  <meta name="description" content="Game 2D platformer petualangan langit murni HTML, CSS, dan JavaScript dengan 3 level unik, musuh, koin, rintangan, dan boss.">
+  <meta property="og:title" content="Skybound Adventure">
+  <meta property="og:description" content="Game 2D platformer petualangan langit murni HTML, CSS, dan JavaScript.">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+  <!-- Main Game Container -->
+  <div id="game-wrapper">
+
+    <!-- 2D Gameplay Canvas (1024x576) -->
+    <canvas id="gameCanvas" width="1024" height="576"></canvas>
+
+    <!-- In-Game HUD -->
+    <div id="hud" class="hidden">
+      <div class="hud-left">
+        <div class="hud-badge" id="hud-badge-level">
+          <span>LEVEL:</span>
+          <span class="hud-highlight" id="hud-level">1 - FOREST SKY</span>
+        </div>
+        <div class="hud-badge" id="hud-badge-score">
+          <span>SCORE:</span>
+          <span class="hud-highlight" id="hud-score">0</span>
+        </div>
+      </div>
+
+      <div class="hud-right">
+        <div class="hud-badge" id="hud-badge-coins">
+          <span>🪙 COINS:</span>
+          <span class="hud-highlight" id="hud-coins">0</span>
+        </div>
+        <div class="hud-badge" id="hud-badge-lives">
+          <span>❤️ LIVES:</span>
+          <span class="hud-highlight" id="hud-lives">3</span>
+        </div>
+        <button id="btn-sound-toggle" class="hud-action-btn" title="Toggle Suara" aria-label="Toggle Suara">🔊</button>
+      </div>
+    </div>
+
+    <!-- Level Transition Banner -->
+    <div id="level-banner">
+      <div class="banner-title" id="banner-title">LEVEL 1</div>
+      <div class="banner-desc" id="banner-desc">FOREST SKY</div>
+    </div>
+
+    <!-- 1. MAIN MENU SCREEN -->
+    <div id="main-menu" class="overlay-screen">
+      <!-- Decorative Animated Sky Elements -->
+      <div class="menu-sun"></div>
+      <div class="menu-cloud cloud-1"></div>
+      <div class="menu-cloud cloud-2"></div>
+      <div class="menu-cloud cloud-3"></div>
+      <div class="menu-island island-left"></div>
+      <div class="menu-island island-right"></div>
+
+      <!-- Menu Card Box -->
+      <div class="menu-box">
+        <h1 class="game-title">SKYBOUND ADVENTURE</h1>
+        <div class="game-tagline">Petualangan 2D di Negeri Langit</div>
+
+        <div class="menu-buttons">
+          <button id="btn-start" class="game-btn btn-primary">
+            <span>▶</span> MULAI GAME
+          </button>
+          <button id="btn-how-to" class="game-btn btn-secondary">
+            <span>📖</span> CARA BERMAIN
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. CARA BERMAIN MODAL -->
+    <div id="how-to-play" class="overlay-screen hidden">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h2 class="modal-title">Cara Bermain</h2>
+        </div>
+
+        <div class="controls-list">
+          <div class="control-item">
+            <span class="control-desc">Bergerak ke Kiri</span>
+            <span class="key-badge">A / ◄ Panah Kiri</span>
+          </div>
+          <div class="control-item">
+            <span class="control-desc">Bergerak ke Kanan</span>
+            <span class="key-badge">D / ► Panah Kanan</span>
+          </div>
+          <div class="control-item">
+            <span class="control-desc">Melompat</span>
+            <span class="key-badge">SPACE / Spasi</span>
+          </div>
+        </div>
+
+        <div class="tips-box">
+          <strong>Tujuan Game:</strong><br>
+          Kumpulkan koin emas (+10), hindari obstacle duri &amp; jurang, kalahkan musuh dengan cara melompat menginjak kepalanya (+25), dan capai portal ungu untuk lanjut ke level berikutnya!
+        </div>
+
+        <button id="btn-back-how-to" class="game-btn btn-primary">
+          <span>⬅</span> KEMBALI
+        </button>
+      </div>
+    </div>
+
+    <!-- 3. GAME OVER SCREEN -->
+    <div id="game-over-screen" class="overlay-screen hidden">
+      <div class="result-box game-over-box">
+        <h2 class="result-title game-over-title">GAME OVER</h2>
+        <div class="result-subtitle">Nyawamu telah habis! Jangan menyerah!</div>
+
+        <div class="stats-card">
+          <div class="stat-item">
+            <span class="stat-label">Score Akhir</span>
+            <span class="stat-value" id="game-over-score">0</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Total Coins</span>
+            <span class="stat-value" id="game-over-coins">0</span>
+          </div>
+        </div>
+
+        <div class="menu-buttons">
+          <button id="btn-restart" class="game-btn btn-danger">
+            <span>🔄</span> RESTART
+          </button>
+          <button id="btn-menu-from-over" class="game-btn btn-secondary">
+            <span>🏠</span> MENU UTAMA
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. YOU WIN SCREEN -->
+    <div id="win-screen" class="overlay-screen hidden">
+      <div class="result-box win-box">
+        <h2 class="result-title win-title">YOU WIN!</h2>
+        <div class="result-subtitle">Selamat! Kamu berhasil menaklukkan seluruh langit!</div>
+
+        <div class="stats-card">
+          <div class="stat-item">
+            <span class="stat-label">Score Akhir</span>
+            <span class="stat-value" id="win-score">0</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Total Coins</span>
+            <span class="stat-value" id="win-coins">0</span>
+          </div>
+        </div>
+
+        <div class="menu-buttons">
+          <button id="btn-play-again" class="game-btn btn-success">
+            <span>🎉</span> MAIN LAGI
+          </button>
+          <button id="btn-menu-from-win" class="game-btn btn-secondary">
+            <span>🏠</span> MENU UTAMA
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Pure Vanilla JavaScript Game Logic -->
+  <script src="./script.js"></script>
+</body>
+</html>
